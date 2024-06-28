@@ -1,4 +1,4 @@
-// File: C:\Users\Guilherme Corneto\Desktop\ShopPTAC-main\src\app\page.js
+// File: C:\Users\laboratorio\picolo\Shop-PTAC\src\app\page.js
 import * as entry from '../../../src/app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

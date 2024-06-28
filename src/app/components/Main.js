@@ -4,19 +4,34 @@ import Image from "next/image";
 import Footer  from "./Footer";
 import { useEffect, useState } from "react";
 import Spinner from "./Spinner";
+import ErrorFetch from "./ErrorFetch";
 
 export default function Main(){
 
   const [listaProd, setListaP] = useState([]);
+  const [listComplete, setListComplete] = useState([]);
+  const [textSearch, setTextSearch] = useState("");
+  const [isError,setIsError] = useState(false);
+
   useEffect( ()=> {
 
     const getProduct = async () =>{
+      try{
       const response = await fetch("https://fakestoreapi.com/products")
       const data = await response.json();
       setListaP(data);
+      setListComplete(data);
     }
+    catch{
+      setIsError(true);
+    }
+  }
     getProduct();
    }, []);
+
+   if(isError == true){
+    return <ErrorFetch/>
+  }
 
   const orderAz = () => {
     const listAux = [...listaProd].sort((a,b) => a.title.localeCompare(b.title));
@@ -37,8 +52,20 @@ export default function Main(){
     const listAux = [...listaProd].sort((a,b) => (b.price) - (a.price));
     setListaP(listAux)
   };
+
+  const search = (text) =>{
+    setTextSearch(text);
+    
+    if(text.trim() == "") {
+      setListaP(listComplete);
+      return
+    }
+    const newList = listaProd.filter((produto) => 
+    produto.title.toUpperCase().trim().includes(textSearch.toUpperCase()));
+    setListaP(newList);
+  }
   
-  if (listaProd[0] == null){
+  if (listComplete[0] == null){
     return <Spinner/>
   }
   
@@ -46,6 +73,9 @@ export default function Main(){
     <>
     <div className= {styles.filters}>
         <div>
+          <input type="text" value={textSearch} placeholder="Pesquise um produto" 
+          onChange={(event) => search(event.target.value) }/>
+
            <button onClick={ orderAz }> Az </button>
         </div>
 
